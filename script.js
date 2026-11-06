@@ -32,7 +32,7 @@ function app(mem, salvar) {
 'use strict';
 
 var $ = function (id) { return document.getElementById(id); };
-var campos = ['cotacao', 'spread', 'iof', 'taxa', 'cashback'];
+var campos = ['cotacao', 'spread', 'iof', 'taxa', 'cashback', 'ajuste'];
 
 function ler(k, def) { return mem[k] != null ? JSON.parse(mem[k]) : def; }
 function gravar(k, v) { salvar(k, JSON.stringify(v)); }
@@ -44,6 +44,8 @@ function marcado(nome) { return document.querySelector('input[name=' + nome + ']
 // Cotações {COP, PEN, GBP, em} e taxas por modalidade, guardadas para uso offline
 var MOEDAS = { COP: '$', PEN: 'S/', GBP: '£' };
 var cot = ler('cotacoes', {});
+// Ajuste por moeda (%) calibrado com uma fatura real; só vale no cartão
+var ajustes = ler('ajustes', {});
 cot = { COP: cot.COP || 0.0017, PEN: cot.PEN || 1.6, GBP: cot.GBP || 7.35, em: cot.em || null };
 // padrao: última versão do taxas.json; taxas: o que está em uso (pode ter edição manual)
 var padrao = ler('padrao', PADRAO);
@@ -65,6 +67,9 @@ function preencher() {
     document.querySelector('.resultado').classList.toggle('cartao', !cg);
     $('rotulo').textContent = cg ? 'Na conta' : 'Na fatura';
     $('lbl-cashback').hidden = cg;
+    $('box-calibra').hidden = cg;
+    $('ajuste').value = txt(ajustes[moeda] || 0);
+    $('calibra-msg').textContent = '';
     $('lbl-taxa').hidden = !(cg && $('saque').checked);
     $('nota').textContent = cg
         ? 'Conta Global: spread zero, IOF 3,5% na conversão. 2 saques grátis por mês; depois, tarifa por saque.'
@@ -85,11 +90,12 @@ function ajustaFonte(el) {
 function calcula() {
     var modo = marcado('modo');
     var saque = modo === 'cg' && $('saque').checked;
-    var brl = calcular(num($('valor').value), num($('cotacao').value),
+    var cotacao = num($('cotacao').value) * (modo === 'uv' ? 1 + num($('ajuste').value) / 100 : 1);
+    var brl = calcular(num($('valor').value), cotacao,
         num($('spread').value), num($('iof').value), saque ? num($('taxa').value) : 0);
     $('brl').textContent = reais(brl);
     // Ultravioleta: IOF entra na fatura e volta depois; cashback sobre a compra sem IOF
-    var semIof = calcular(num($('valor').value), num($('cotacao').value), num($('spread').value), 0);
+    var semIof = calcular(num($('valor').value), cotacao, num($('spread').value), 0);
     $('iof-valor').textContent = reais(brl - semIof);
     var cb = cashback(semIof, num($('cashback').value));
     $('cashback-valor').textContent = reais(cb);
@@ -98,6 +104,7 @@ function calcula() {
 
 function salvarCampo(id) {
     var modo = marcado('modo'), v = num($(id).value);
+    if (id === 'ajuste') { ajustes[marcado('moeda')] = v; gravar('ajustes', ajustes); calcula(); status(); return; }
     if (id === 'cotacao') { cot[marcado('moeda')] = v; gravar('cotacoes', cot); }
     else { taxas[modo][id] = v; gravar('taxas', taxas); manual = true; gravar('manual', true); status(); }
     calcula();
@@ -117,6 +124,8 @@ function status(erro) {
         'Cotação: ' + (quando || 'aproximada (nunca consultada)'),
         'Taxas: ' + (manual ? 'editadas por você' : 'de ' + (dia || 'padrão'))
     ];
+    var aj = ajustes[marcado('moeda')];
+    if (aj && marcado('modo') === 'uv') linhas.push('Ajuste calibrado: ' + txt(aj) + '%');
     $('status-det').replaceChildren.apply($('status-det'), linhas.map(function (t) {
         var p = document.createElement('p'); p.textContent = t; return p;
     }));
@@ -163,6 +172,27 @@ document.querySelectorAll('[data-abre]').forEach(function (b) {
 document.querySelectorAll('dialog').forEach(function (d) {
     d.querySelector('.fechar').addEventListener('click', function () { d.close(); });
     d.addEventListener('click', function (e) { if (e.target === d) d.close(); });
+});
+
+// Calibração: ajuste = fatura real / valor estimado sem ajuste e sem IOF - 1
+$('calibrar').addEventListener('click', function () {
+    var real = num($('fatura-real').value);
+    var estimado = calcular(num($('valor').value), num($('cotacao').value), num($('spread').value), 0);
+    if (!real || !estimado) {
+        $('calibra-msg').textContent = 'Preencha o valor da compra na tela e o valor da fatura.';
+        return;
+    }
+    var aj = ajusteCalibrado(real, estimado);
+    if (Math.abs(aj) > 15) {
+        $('calibra-msg').textContent = 'Diferença de ' + txt(aj) + '% parece erro de digitação. Confira os valores.';
+        return;
+    }
+    ajustes[marcado('moeda')] = aj;
+    gravar('ajustes', ajustes);
+    $('ajuste').value = txt(aj);
+    $('fatura-real').value = '';
+    $('calibra-msg').textContent = 'Ajuste de ' + txt(aj) + '% salvo para esta moeda.';
+    calcula(); status();
 });
 
 preencher();

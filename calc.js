@@ -16,11 +16,18 @@ function cashback(brl, pct) {
     return Math.round(brl * pct) / 100;
 }
 
+// % que leva o estimado ao valor real da fatura (4 casas)
+function ajusteCalibrado(real, estimado) {
+    return Math.round((real / estimado - 1) * 1e6) / 1e4;
+}
+
 if (typeof module !== 'undefined') {
     var assert = require('assert');
     assert.strictEqual(calcular(100, 7.35529, 3.5, 0), 761.27);
     assert.strictEqual(calcular(100000, 0.00170214, 0, 3.5, 6.5), 182.67);
     assert.strictEqual(calcular(0, 7, 3.5, 3.5, 6.5), 6.5);
     assert.strictEqual(cashback(761.27, 1.25), 9.52);
+    assert.strictEqual(ajusteCalibrado(101, 100), 1);
+    assert.strictEqual(ajusteCalibrado(99.5, 100), -0.5);
     console.log('ok');
 }

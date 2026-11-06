@@ -80,6 +80,15 @@
             <label id="lbl-cashback">Cashback (%)<input type="text" inputmode="decimal" id="cashback"></label>
             <label id="lbl-taxa" hidden>Saque (R$)<input type="text" inputmode="decimal" id="taxa"></label>
         </div>
+        <div id="box-calibra" class="calibra">
+            <label>Ajuste da cotação (%)<input type="text" inputmode="decimal" id="ajuste"></label>
+            <p>Para calibrar: digite na tela o valor de uma compra real e, aqui, quanto ela custou na fatura do Nubank (a linha da compra, sem o IOF).</p>
+            <div class="calibra-linha">
+                <label>Valor na fatura (R$)<input type="text" inputmode="decimal" id="fatura-real"></label>
+                <button type="button" id="calibrar">Calibrar</button>
+            </div>
+            <p id="calibra-msg" role="status"></p>
+        </div>
         <p id="nota"></p>
         <button type="button" id="padrao" hidden>↺ Restaurar taxas padrão</button>
     </dialog>
