@@ -58,12 +58,24 @@ function salvarCampo(id) {
     calcula();
 }
 
+var offline = false;
+
+function pilula(cor, texto) {
+    var el = document.createElement('span');
+    el.className = 'pilula ' + cor;
+    el.textContent = texto;
+    return el;
+}
+
 function status(erro) {
+    if (erro) offline = true;
     $('padrao').hidden = !manual;
-    $('status').textContent = (erro ? 'Sem internet. ' : '') + (cot.em
-        ? 'Cotação comercial (venda) de ' + new Date(cot.em).toLocaleString('pt-BR') + '.'
-        : 'Cotação ainda não consultada; usando valor aproximado.')
-        + ' Taxas ' + (manual ? 'editadas manualmente.' : 'de ' + (padrao.atualizado || 'padrão') + '.');
+    var quando = cot.em && new Date(cot.em).toLocaleString('pt-BR', { day: '2-digit', month: '2-digit', hour: '2-digit', minute: '2-digit' });
+    var taxasEm = (padrao.atualizado || '').split('-').reverse().join('/');
+    $('status').replaceChildren(
+        pilula(offline ? 'aviso' : 'ok', (offline ? 'Offline · ' : 'Ao vivo · ') + (quando ? 'cotação de ' + quando : 'cotação aproximada')),
+        pilula(manual ? 'aviso' : 'neutro', manual ? 'Taxas editadas' : 'Taxas de ' + (taxasEm || 'padrão'))
+    );
 }
 
 document.querySelectorAll('input[type=radio], #saque').forEach(function (el) {

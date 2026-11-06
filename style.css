@@ -69,3 +69,10 @@ button { margin-top: 12px; padding: 10px 14px; border: 0; border-radius: 12px; b
 .taxas[open] summary::after { transform: rotate(90deg); }
 .taxas[open] summary { margin-bottom: 14px; }
 .taxas summary:focus-visible { outline: 2px solid var(--roxo); outline-offset: 4px; border-radius: 4px; }
+#status { display: flex; flex-wrap: wrap; justify-content: center; gap: 8px; }
+.pilula { display: inline-flex; align-items: center; gap: 6px; padding: 6px 12px; border-radius: 999px; font-size: 12px; font-weight: 600; background: var(--card); border: 1px solid var(--borda); color: var(--suave); }
+.pilula::before { content: ""; width: 8px; height: 8px; border-radius: 50%; background: currentColor; }
+.pilula.ok { color: #1a8a4a; }
+.pilula.aviso { color: #c26a00; }
+.pilula.neutro { color: var(--roxo); }
+@media (prefers-color-scheme: dark) { .pilula.ok { color: #4cd38a; } .pilula.aviso { color: #ffb44c; } }
