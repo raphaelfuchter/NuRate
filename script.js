@@ -71,11 +71,10 @@ function status(erro) {
     if (erro) offline = true;
     $('padrao').hidden = !manual;
     var quando = cot.em && new Date(cot.em).toLocaleString('pt-BR', { day: '2-digit', month: '2-digit', hour: '2-digit', minute: '2-digit' });
-    var taxasEm = (padrao.atualizado || '').split('-').reverse().join('/');
-    $('status').replaceChildren(
-        pilula(offline ? 'aviso' : 'ok', (offline ? 'Offline · ' : 'Ao vivo · ') + (quando ? 'cotação de ' + quando : 'cotação aproximada')),
-        pilula(manual ? 'aviso' : 'neutro', manual ? 'Taxas editadas' : 'Taxas de ' + (taxasEm || 'padrão'))
-    );
+    var dia = (padrao.atualizado || '').split('-').reverse().slice(0, 2).join('/');
+    $('status').replaceChildren(pilula(offline || manual ? 'aviso' : 'ok',
+        (offline ? 'Offline' : 'Ao vivo') + (quando ? ' · cotação ' + quando : ' · cotação aproximada')
+        + ' · taxas ' + (manual ? 'editadas' : dia || 'padrão')));
 }
 
 document.querySelectorAll('input[type=radio], #saque').forEach(function (el) {
@@ -84,8 +83,16 @@ document.querySelectorAll('input[type=radio], #saque').forEach(function (el) {
 // Máscara de centavos: 1 → 0,01 → 0,10 → 1,00
 $('valor').addEventListener('input', function () {
     var d = this.value.replace(/\D/g, '').replace(/^0+/, '');
-    this.value = d ? (d / 100).toLocaleString('pt-BR', { minimumFractionDigits: 2 }) : '';
+    this.value = ((d || 0) / 100).toLocaleString('pt-BR', { minimumFractionDigits: 2 });
+    fimCursor(this);
     calcula();
+});
+// Cursor sempre no fim, onde os dígitos entram
+function fimCursor(el) {
+    setTimeout(function () { el.setSelectionRange(el.value.length, el.value.length); });
+}
+['focus', 'click', 'keyup'].forEach(function (ev) {
+    $('valor').addEventListener(ev, function () { fimCursor(this); });
 });
 campos.forEach(function (id) {
     $(id).addEventListener('input', function () { salvarCampo(id); });
