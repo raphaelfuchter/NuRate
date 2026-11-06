@@ -53,8 +53,14 @@ main { position: relative; z-index: 1; max-width: 520px; margin: -24px auto 0; p
 .card { background: var(--card); border-radius: 20px; padding: 18px; box-shadow: var(--sombra); border: 1px solid var(--borda); }
 
 .tabs { display: grid; grid-template-columns: 1fr 1fr; gap: 4px; padding: 4px; border-radius: 14px; background: var(--tab); }
-main > .tabs:first-child { grid-template-columns: repeat(3, 1fr); height: 48px; background: var(--tab); box-shadow: 0 6px 18px rgba(43, 10, 74, .18); }
-main > .tabs:first-child span { height: 40px; padding: 0 6px; display: flex; align-items: center; justify-content: center; }
+.moedas { display: flex; gap: 8px; }
+.moedas .tabs { flex: 1; height: 48px; box-shadow: 0 6px 18px rgba(43, 10, 74, .18); }
+.trocar { flex: none; display: grid; place-items: center; width: 48px; height: 48px; margin: 0; padding: 0; border: 0; border-radius: 14px; background: var(--tab); color: var(--roxo); fill: currentColor; box-shadow: 0 6px 18px rgba(43, 10, 74, .18); cursor: pointer; }
+.escolha { display: flex; flex-direction: column; gap: 10px; }
+.escolha label { display: flex; flex-direction: column; gap: 6px; font-size: 13px; color: var(--suave); }
+.escolha select { width: 100%; padding: 12px; border-radius: 12px; border: 1px solid var(--borda); background: var(--tab); color: var(--texto); font: 600 16px system-ui, sans-serif; }
+#inverter { align-self: center; width: 44px; height: 44px; margin: 0; padding: 0; border-radius: 50%; font-size: 20px; }
+.moedas .tabs span { height: 40px; padding: 0 6px; display: flex; align-items: center; justify-content: center; }
 .tabs label { cursor: pointer; }
 .tabs input { position: absolute; opacity: 0; pointer-events: none; }
 .tabs span { display: block; padding: 10px 6px; border-radius: 10px; text-align: center; font-size: 14px; font-weight: 600; color: var(--suave); transition: background .2s, color .2s; }

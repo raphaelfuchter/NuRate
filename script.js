@@ -41,12 +41,47 @@ function num(s) { s = String(s); if (s.indexOf(',') >= 0) s = s.replace(/\./g, '
 function txt(n) { return String(n).replace('.', ','); }
 function marcado(nome) { return document.querySelector('input[name=' + nome + ']:checked').value; }
 
-// Cotações {COP, PEN, GBP, em} e taxas por modalidade, guardadas para uso offline
-var MOEDAS = { COP: '$', PEN: 'S/', GBP: '£' };
+// Moedas com cotação ao vivo na AwesomeAPI (só fiat); a tela mostra 2 favoritas
+var MOEDAS = 'USD EUR GBP ARS AED AUD BOB CAD CHF CLP CNY COP CRC CZK DKK EGP HKD HUF ILS INR JPY KES KRW MXN NOK NZD PEN PHP PLN PYG RON RSD RUB SAR SEK SGD THB TRY TWD UYU ZAR'.split(' ');
+var nomes = (function () { try { return new Intl.DisplayNames(['pt-BR'], { type: 'currency' }); } catch (e) { return null; } })();
+function nome(m) { var n = nomes && nomes.of(m); return n && n !== m ? n.charAt(0).toUpperCase() + n.slice(1) : m; }
+function bandeira(m) { return String.fromCodePoint.apply(null, m.slice(0, 2).split('').map(function (c) { return 127397 + c.charCodeAt(0); })); }
+function simbolo(m) {
+    try { return (0).toLocaleString('pt-BR', { style: 'currency', currency: m, currencyDisplay: 'narrowSymbol' }).replace(/[\d\s,.]/g, '') || m; }
+    catch (e) { return m; }
+}
+var fav = ler('favoritas', ['COP', 'PEN']);
+
+function montaTabs() {
+    var atual = document.querySelector('input[name=moeda]:checked');
+    atual = atual && fav.indexOf(atual.value) >= 0 ? atual.value : fav[0];
+    $('tabs-moeda').replaceChildren.apply($('tabs-moeda'), fav.map(function (m) {
+        var l = document.createElement('label'), i = document.createElement('input'), s = document.createElement('span');
+        i.type = 'radio'; i.name = 'moeda'; i.value = m; i.checked = m === atual;
+        i.addEventListener('change', preencher);
+        s.textContent = bandeira(m) + ' ' + m; s.title = nome(m);
+        l.append(i, s); return l;
+    }));
+}
+// Seletor das 2 moedas: cada select mostra todas; escolher a mesma da outra troca as duas
+MOEDAS.slice().sort(function (a, b) { return nome(a).localeCompare(nome(b)); }).forEach(function (m) {
+    ['moeda1', 'moeda2'].forEach(function (id) { $(id).add(new Option(bandeira(m) + ' ' + nome(m) + ' (' + m + ')', m)); });
+});
+function escolheFav(nova) {
+    fav = nova; gravar('favoritas', fav);
+    $('moeda1').value = fav[0]; $('moeda2').value = fav[1];
+    montaTabs(); preencher();
+}
+$('moeda1').addEventListener('change', function () { escolheFav([this.value, this.value === fav[1] ? fav[0] : fav[1]]); });
+$('moeda2').addEventListener('change', function () { escolheFav([this.value === fav[0] ? fav[1] : fav[0], this.value]); });
+$('inverter').addEventListener('click', function () { escolheFav([fav[1], fav[0]]); });
+$('moeda1').value = fav[0]; $('moeda2').value = fav[1];
+montaTabs();
+
+// Cotações {MOEDA: R$, em} guardadas para uso offline
 var cot = ler('cotacoes', {});
 // Ajuste por moeda (%) calibrado com uma fatura real; só vale no cartão
 var ajustes = ler('ajustes', {});
-cot = { COP: cot.COP || 0.0017, PEN: cot.PEN || 1.6, GBP: cot.GBP || 7.35, em: cot.em || null };
 // padrao: última versão do taxas.json; taxas: o que está em uso (pode ter edição manual)
 var padrao = ler('padrao', PADRAO);
 var taxas = ler('taxas', JSON.parse(JSON.stringify(padrao)));
@@ -54,8 +89,8 @@ var manual = ler('manual', false);
 
 function preencher() {
     var modo = marcado('modo'), moeda = marcado('moeda'), t = taxas[modo];
-    $('simbolo').textContent = MOEDAS[moeda];
-    $('cotacao').value = txt(cot[moeda]);
+    $('simbolo').textContent = simbolo(moeda);
+    $('cotacao').value = txt(cot[moeda] || 0);
     $('spread').value = txt(t.spread);
     $('iof').value = txt(t.iof);
     $('taxa').value = txt(t.taxa || 0);
@@ -131,7 +166,7 @@ function status(erro) {
     }));
 }
 
-document.querySelectorAll('input[type=radio], #saque').forEach(function (el) {
+document.querySelectorAll('input[name=modo], #saque').forEach(function (el) {
     el.addEventListener('change', preencher);
 });
 // Máscara de centavos: 1 → 0,01 → 0,10 → 1,00
@@ -201,12 +236,13 @@ $('valor').focus();
 // Cotação: sem cache do WebView; a data vem da própria API
 function buscaCotacao() {
     if (!navigator.onLine) return status(true);
-    fetch('https://economia.awesomeapi.com.br/last/COP-BRL,PEN-BRL,GBP-BRL', { cache: 'no-store' })
+    fetch('https://economia.awesomeapi.com.br/last/' + MOEDAS.map(function (m) { return m + '-BRL'; }).join(','), { cache: 'no-store' })
         .then(function (r) { if (!r.ok) throw r; return r.json(); })
         .then(function (d) {
             offline = false;
-            cot = { em: 0 };
-            Object.keys(MOEDAS).forEach(function (m) {
+            cot.em = 0;
+            MOEDAS.forEach(function (m) {
+                if (!d[m + 'BRL']) return;
                 cot[m] = +d[m + 'BRL'].ask;
                 cot.em = Math.max(cot.em, +d[m + 'BRL'].timestamp * 1000);
             });

@@ -3,7 +3,7 @@
 <head>
     <meta charset="UTF-8">
     <title>NuRate</title>
-    <meta name="description" content="Quanto sua compra em libra ou peso colombiano custa em reais no Nubank Ultravioleta ou na Conta Global">
+    <meta name="description" content="Quanto sua compra em moeda estrangeira custa em reais no Nubank Ultravioleta ou na Conta Global">
     <meta name="viewport" content="width=device-width, initial-scale=1">
     <meta name="theme-color" content="#4a1a7a">
     <link rel="stylesheet" href="style.css">
@@ -29,10 +29,11 @@
 </header>
 
 <main>
-    <div class="tabs" role="radiogroup" aria-label="Moeda">
-        <label><input type="radio" name="moeda" value="COP" checked><span>🇨🇴 Peso</span></label>
-        <label><input type="radio" name="moeda" value="PEN"><span>🇵🇪 Sol</span></label>
-        <label><input type="radio" name="moeda" value="GBP"><span>🇬🇧 Libra</span></label>
+    <div class="moedas">
+        <div class="tabs" id="tabs-moeda" role="radiogroup" aria-label="Moeda"></div>
+        <button type="button" class="trocar" data-abre="dlg-moedas" aria-label="Trocar moedas">
+            <svg viewBox="0 0 24 24" width="20" height="20" aria-hidden="true"><path d="M7 4 3 8l4 4V9h10V7H7V4zm10 8v3H7v2h10v3l4-4-4-4z"/></svg>
+        </button>
     </div>
 
     <section class="card conversor">
@@ -92,6 +93,14 @@
         <p id="nota"></p>
         <button type="button" id="padrao" hidden>↺ Restaurar taxas padrão</button>
     </dialog>
+<dialog id="dlg-moedas" class="folha">
+    <div class="folha-topo"><h2>Moedas</h2><button type="button" class="fechar" aria-label="Fechar">✕</button></div>
+    <div class="escolha">
+        <label>1ª moeda<select id="moeda1"></select></label>
+        <button type="button" id="inverter" aria-label="Inverter ordem">⇅</button>
+        <label>2ª moeda<select id="moeda2"></select></label>
+    </div>
+</dialog>
 <dialog id="dlg-sobre" class="folha sobre">
     <div class="folha-topo"><h2>Sobre</h2><button type="button" class="fechar" aria-label="Fechar">✕</button></div>
     <div class="perfil">
@@ -101,7 +110,7 @@
             <small>Full Stack Developer · São Ludgero/SC</small>
         </div>
     </div>
-    <p class="descricao">Calcula quanto uma compra em peso colombiano, sol peruano ou libra custa em reais no Nubank Ultravioleta e na Conta Global, com spread, IOF, saque e cashback. Funciona offline com a última cotação.</p>
+    <p class="descricao">Calcula quanto uma compra em mais de 40 moedas custa em reais no Nubank Ultravioleta e na Conta Global, com spread, IOF, saque e cashback. Funciona offline com a última cotação.</p>
     <nav class="links">
         <a href="https://github.com/raphaelfuchter" target="_blank" rel="noopener"><span>GitHub</span><small>@raphaelfuchter</small></a>
         <a href="https://github.com/raphaelfuchter/NuRate" target="_blank" rel="noopener"><span>Código-fonte</span><small>NuRate</small></a>
