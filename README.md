@@ -1,23 +1,20 @@
-https://raphaelfuchter.github.io/LibraCartao
+# CambioCartao
 
-# LibraCartao
-Libra Cartão. App para calcular o valor em reais que virá no cartão Nubank (ou qualquer outro cartão) ao efetuar uma compra em libras inglesas.
+Calcula quanto uma compra em **libra (GBP)** ou **peso colombiano (COP)** custa em reais no Nubank:
 
-## Introdução
-Este APP foi criado usando o apenas HTML, JavaScript e CSS. E contém a apk para para Android (funciona offline também).
+- **Ultravioleta (crédito):** cotação × (1 + spread 3,5%) × (1 + IOF). O IOF é devolvido na fatura, então o padrão é 0%.
+- **Conta Global:** cotação × (1 + spread 0%) × (1 + IOF 3,5%). Opção de incluir a tarifa de saque (2 saques grátis por mês; depois R$ 6,50, a confirmar no app).
 
-## Fontes de Dados
-Utilizo a api do BCB para obter o dólar PTAX e a API do AwesomeAPI para obter a cotação da Libra.
+Web: https://raphaelfuchter.github.io/CambioCartao/ · Android: `app.apk` (funciona offline).
 
-## Regra de negócio do aplicativo
-Ele calcula a cotação seguindo a regra abaixo:
-- Obtém o valor em libras inglesas digitada pelo usuário
-- Obtém o dólar PTAX
-- Obtém o valor em dolares da libra
-........
+## Dados
+- Cotação comercial (venda): [AwesomeAPI](https://economia.awesomeapi.com.br/last/GBP-BRL,COP-BRL).
+- Taxas: `taxas.json` neste repo. O Nubank não publica API de taxas; edite este arquivo quando mudarem e todos os apps pegam na próxima abertura com internet.
+- Sem internet, o app usa a última cotação e as últimas taxas salvas.
+- Qualquer campo pode ser editado na tela; vale até tocar em "Restaurar taxas padrão".
+
+## Teste
+`node calc.js`
 
 ## Licença
-Por falar em créditos, este App está licenciado pela "Atribuição 4.0 Internacional (CC BY 4.0)". Dessa forma, sinta-se a vontade para modificar o projeto e até mesmo
-criar outros projetos tendo este como base, desde que haja a devida atribuição dos créditos, conforme descrito acima.
-
-Espero que gostem do App :)
+CC BY 4.0.
