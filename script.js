@@ -37,7 +37,7 @@ function preencher() {
     $('lbl-taxa').hidden = !(cg && $('saque').checked);
     $('nota').textContent = cg
         ? 'Conta Global: spread zero, IOF 3,5% na conversão. 2 saques grátis por mês; depois, tarifa por saque.'
-        : 'Ultravioleta: spread 3,5%. IOF é devolvido na fatura (IOF zero).';
+        : 'Ultravioleta: spread 3,5%. IOF de 3,5% vem na fatura e é reembolsado depois.';
     status();
     calcula();
 }
@@ -48,7 +48,12 @@ function calcula() {
     var brl = calcular(num($('valor').value), num($('cotacao').value),
         num($('spread').value), num($('iof').value), saque ? num($('taxa').value) : 0);
     $('brl').value = brl.toFixed(2).replace('.', ',');
-    $('cashback-valor').textContent = cashback(brl, num($('cashback').value)).toFixed(2).replace('.', ',');
+    // Ultravioleta: IOF entra na fatura e volta depois; cashback sobre a compra sem IOF
+    var semIof = calcular(num($('valor').value), num($('cotacao').value), num($('spread').value), 0);
+    $('iof-valor').textContent = (brl - semIof).toFixed(2).replace('.', ',');
+    var cb = cashback(semIof, num($('cashback').value));
+    $('cashback-valor').textContent = cb.toFixed(2).replace('.', ',');
+    $('final-valor').textContent = (Math.round((semIof - cb) * 100) / 100).toFixed(2).replace('.', ',');
 }
 
 function salvarCampo(id) {

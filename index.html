@@ -28,7 +28,11 @@
         <div class="resultado">
             <small>Na fatura / conta</small>
             <span class="linha"><span>R$</span><input type="text" id="brl" readonly tabindex="-1"></span>
-            <small id="box-cashback" class="cashback">Cashback de <strong>R$ <span id="cashback-valor">0,00</span></strong></small>
+            <div id="box-cashback" class="extras">
+                <span>IOF reembolsado<strong>R$ <span id="iof-valor">0,00</span></strong></span>
+                <span>Cashback<strong>R$ <span id="cashback-valor">0,00</span></strong></span>
+                <span class="final">Custo final (após reembolso e cashback)<strong>R$ <span id="final-valor">0,00</span></strong></span>
+            </div>
         </div>
     </section>
 

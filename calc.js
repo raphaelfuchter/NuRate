@@ -1,8 +1,8 @@
 // Taxas padrão (pesquisadas em 11/2026; conferir no app do Nubank)
 var PADRAO = {
     atualizado: "2026-11-06",
-    // Cartão Ultravioleta: cashback 1,25% sobre o valor em reais; spread 3,5%; IOF 3,5% cobrado e devolvido na fatura (IOF zero)
-    uv: { spread: 3.5, iof: 0, cashback: 1.25 },
+    // Cartão Ultravioleta: cashback 1,25% sobre o valor em reais; spread 3,5%; IOF 3,5% cobrado e depois reembolsado na fatura
+    uv: { spread: 3.5, iof: 3.5, cashback: 1.25 },
     // Conta Global Ultravioleta: spread zero, IOF 3,5% na conversão; 2 saques grátis/mês, depois R$ 6,50
     cg: { spread: 0, iof: 3.5, taxa: 6.5 }
 };
