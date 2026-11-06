@@ -45,18 +45,27 @@ function preencher() {
     calcula();
 }
 
+function reais(n) {
+    return (Math.round(n * 100) / 100).toLocaleString('pt-BR', { minimumFractionDigits: 2, maximumFractionDigits: 2 });
+}
+
+// Diminui a fonte do valor digitado quando o número fica longo
+function ajustaFonte(el) {
+    el.style.fontSize = Math.min(34, Math.floor(380 / Math.max(el.value.length, 1))) + 'px';
+}
+
 function calcula() {
     var modo = marcado('modo');
     var saque = modo === 'cg' && $('saque').checked;
     var brl = calcular(num($('valor').value), num($('cotacao').value),
         num($('spread').value), num($('iof').value), saque ? num($('taxa').value) : 0);
-    $('brl').value = brl.toFixed(2).replace('.', ',');
+    $('brl').textContent = reais(brl);
     // Ultravioleta: IOF entra na fatura e volta depois; cashback sobre a compra sem IOF
     var semIof = calcular(num($('valor').value), num($('cotacao').value), num($('spread').value), 0);
-    $('iof-valor').textContent = (brl - semIof).toFixed(2).replace('.', ',');
+    $('iof-valor').textContent = reais(brl - semIof);
     var cb = cashback(semIof, num($('cashback').value));
-    $('cashback-valor').textContent = cb.toFixed(2).replace('.', ',');
-    $('final-valor').textContent = (Math.round((semIof - cb) * 100) / 100).toFixed(2).replace('.', ',');
+    $('cashback-valor').textContent = reais(cb);
+    $('final-valor').textContent = reais(semIof - cb);
 }
 
 function salvarCampo(id) {
@@ -93,6 +102,7 @@ $('valor').addEventListener('input', function () {
     var d = this.value.replace(/\D/g, '').replace(/^0+/, '');
     this.value = ((d || 0) / 100).toLocaleString('pt-BR', { minimumFractionDigits: 2 });
     fimCursor(this);
+    ajustaFonte(this);
     calcula();
 });
 // Cursor sempre no fim, onde os dígitos entram
