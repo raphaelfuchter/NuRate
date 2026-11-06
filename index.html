@@ -42,8 +42,8 @@
         <input type="checkbox" id="saque" role="switch">
     </label>
 
-    <section class="card">
-        <h2>Taxas</h2>
+    <details class="card taxas">
+        <summary>Taxas</summary>
         <div id="vars">
             <label>Cotação (R$)<input type="text" inputmode="decimal" id="cotacao"></label>
             <label>Spread (%)<input type="text" inputmode="decimal" id="spread"></label>
@@ -53,7 +53,7 @@
         </div>
         <p id="nota"></p>
         <button type="button" id="padrao" hidden>↺ Restaurar taxas padrão</button>
-    </section>
+    </details>
 
     <p id="status"></p>
 </main>

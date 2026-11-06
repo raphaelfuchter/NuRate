@@ -63,3 +63,9 @@ button { margin-top: 12px; padding: 10px 14px; border: 0; border-radius: 12px; b
 [hidden] { display: none !important; }
 .cashback { margin-top: 6px; color: rgba(255, 255, 255, .85) !important; }
 .cashback strong { color: #fff; }
+.taxas summary { display: flex; justify-content: space-between; align-items: center; cursor: pointer; list-style: none; font-size: 13px; font-weight: 600; text-transform: uppercase; letter-spacing: .6px; color: var(--suave); }
+.taxas summary::-webkit-details-marker { display: none; }
+.taxas summary::after { content: "›"; font-size: 22px; line-height: 1; transition: transform .2s; }
+.taxas[open] summary::after { transform: rotate(90deg); }
+.taxas[open] summary { margin-bottom: 14px; }
+.taxas summary:focus-visible { outline: 2px solid var(--roxo); outline-offset: 4px; border-radius: 4px; }
