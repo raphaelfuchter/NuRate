@@ -11,6 +11,11 @@
 <body>
 <header>
     <h1 class="marca"><span class="logo" aria-hidden="true">⇄</span><span>câmbio<b>cartão</b></span></h1>
+    <div class="acoes">
+    <div class="menu-wrap">
+        <button type="button" id="status" class="pilula ok" aria-expanded="false"></button>
+        <div id="status-det" class="menu detalhe" hidden></div>
+    </div>
     <div class="menu-wrap">
         <button type="button" id="btn-menu" class="icone" aria-label="Menu" aria-haspopup="true" aria-expanded="false">
             <svg viewBox="0 0 24 24" width="22" height="22" aria-hidden="true"><circle cx="12" cy="5" r="2"/><circle cx="12" cy="12" r="2"/><circle cx="12" cy="19" r="2"/></svg>
@@ -20,18 +25,20 @@
             <button type="button" role="menuitem" data-abre="dlg-sobre">ℹ️ Sobre</button>
         </div>
     </div>
+    </div>
 </header>
 
 <main>
     <div class="tabs" role="radiogroup" aria-label="Moeda">
-        <label><input type="radio" name="moeda" value="COP" checked><span>🇨🇴 Peso colombiano</span></label>
+        <label><input type="radio" name="moeda" value="COP" checked><span>🇨🇴 Peso</span></label>
+        <label><input type="radio" name="moeda" value="PEN"><span>🇵🇪 Sol</span></label>
         <label><input type="radio" name="moeda" value="GBP"><span>🇬🇧 Libra</span></label>
     </div>
 
     <section class="card conversor">
         <label class="campo-valor">
             <small>Valor da compra</small>
-            <span class="linha"><span id="simbolo">$</span><input type="text" inputmode="numeric" id="valor" autocomplete="off" value="0,00"></span>
+            <span class="linha"><span id="simbolo">$</span><input type="text" inputmode="numeric" id="valor" autocomplete="off" autofocus value="0,00"></span>
         </label>
         <div class="resultado">
             <div class="topo-resultado">
@@ -62,7 +69,6 @@
     </label>
 
 
-    <p id="status"></p>
 </main>
 
     <dialog id="dlg-taxas" class="folha">
@@ -86,7 +92,7 @@
             <small>Full Stack Developer · São Ludgero/SC</small>
         </div>
     </div>
-    <p class="descricao">Calcula quanto uma compra em peso colombiano ou libra custa em reais no Nubank Ultravioleta e na Conta Global, com spread, IOF, saque e cashback. Funciona offline com a última cotação.</p>
+    <p class="descricao">Calcula quanto uma compra em peso colombiano, sol peruano ou libra custa em reais no Nubank Ultravioleta e na Conta Global, com spread, IOF, saque e cashback. Funciona offline com a última cotação.</p>
     <nav class="links">
         <a href="https://github.com/raphaelfuchter" target="_blank" rel="noopener"><span>GitHub</span><small>@raphaelfuchter</small></a>
         <a href="https://github.com/raphaelfuchter/CambioCartao" target="_blank" rel="noopener"><span>Código-fonte</span><small>CambioCartao</small></a>

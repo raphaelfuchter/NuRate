@@ -41,8 +41,10 @@ function num(s) { s = String(s); if (s.indexOf(',') >= 0) s = s.replace(/\./g, '
 function txt(n) { return String(n).replace('.', ','); }
 function marcado(nome) { return document.querySelector('input[name=' + nome + ']:checked').value; }
 
-// Cotações {GBP, COP, em} e taxas por modalidade, guardadas para uso offline
-var cot = ler('cotacoes', { GBP: 7.35, COP: 0.0017, em: null });
+// Cotações {COP, PEN, GBP, em} e taxas por modalidade, guardadas para uso offline
+var MOEDAS = { COP: '$', PEN: 'S/', GBP: '£' };
+var cot = ler('cotacoes', {});
+cot = { COP: cot.COP || 0.0017, PEN: cot.PEN || 1.6, GBP: cot.GBP || 7.35, em: cot.em || null };
 // padrao: última versão do taxas.json; taxas: o que está em uso (pode ter edição manual)
 var padrao = ler('padrao', PADRAO);
 var taxas = ler('taxas', JSON.parse(JSON.stringify(padrao)));
@@ -50,7 +52,7 @@ var manual = ler('manual', false);
 
 function preencher() {
     var modo = marcado('modo'), moeda = marcado('moeda'), t = taxas[modo];
-    $('simbolo').textContent = moeda === 'GBP' ? '£' : '$';
+    $('simbolo').textContent = MOEDAS[moeda];
     $('cotacao').value = txt(cot[moeda]);
     $('spread').value = txt(t.spread);
     $('iof').value = txt(t.iof);
@@ -103,21 +105,21 @@ function salvarCampo(id) {
 
 var offline = false;
 
-function pilula(cor, texto) {
-    var el = document.createElement('span');
-    el.className = 'pilula ' + cor;
-    el.textContent = texto;
-    return el;
-}
-
 function status(erro) {
     if (erro) offline = true;
     $('padrao').hidden = !manual;
-    var quando = cot.em && new Date(cot.em).toLocaleString('pt-BR', { day: '2-digit', month: '2-digit', hour: '2-digit', minute: '2-digit' });
-    var dia = (padrao.atualizado || '').split('-').reverse().slice(0, 2).join('/');
-    $('status').replaceChildren(pilula(offline || manual ? 'aviso' : 'ok',
-        (offline ? 'Offline' : 'Ao vivo') + (quando ? ' · cotação ' + quando : ' · cotação aproximada')
-        + ' · taxas ' + (manual ? 'editadas' : dia || 'padrão')));
+    var quando = cot.em && new Date(cot.em).toLocaleString('pt-BR', { day: '2-digit', month: '2-digit', year: 'numeric', hour: '2-digit', minute: '2-digit' });
+    var dia = (padrao.atualizado || '').split('-').reverse().join('/');
+    $('status').className = 'pilula ' + (offline ? 'aviso' : 'ok');
+    $('status').textContent = offline ? 'Offline' : 'Ao vivo';
+    var linhas = [
+        offline ? 'Sem internet: usando a última cotação salva.' : 'Cotação atualizada pela internet.',
+        'Cotação: ' + (quando || 'aproximada (nunca consultada)'),
+        'Taxas: ' + (manual ? 'editadas por você' : 'de ' + (dia || 'padrão'))
+    ];
+    $('status-det').replaceChildren.apply($('status-det'), linhas.map(function (t) {
+        var p = document.createElement('p'); p.textContent = t; return p;
+    }));
 }
 
 document.querySelectorAll('input[type=radio], #saque').forEach(function (el) {
@@ -151,8 +153,10 @@ $('padrao').addEventListener('click', function () {
 // Menu e janelas
 var $menu = $('menu'), $btnMenu = $('btn-menu');
 function menu(abrir) { $menu.hidden = !abrir; $btnMenu.setAttribute('aria-expanded', abrir); }
-$btnMenu.addEventListener('click', function (e) { e.stopPropagation(); menu($menu.hidden); });
-document.addEventListener('click', function () { menu(false); });
+$btnMenu.addEventListener('click', function (e) { e.stopPropagation(); det(false); menu($menu.hidden); });
+function det(abrir) { $('status-det').hidden = !abrir; $('status').setAttribute('aria-expanded', abrir); }
+$('status').addEventListener('click', function (e) { e.stopPropagation(); menu(false); det($('status-det').hidden); });
+document.addEventListener('click', function () { menu(false); det(false); });
 document.querySelectorAll('[data-abre]').forEach(function (b) {
     b.addEventListener('click', function () { menu(false); $(b.dataset.abre).showModal(); });
 });
@@ -162,15 +166,20 @@ document.querySelectorAll('dialog').forEach(function (d) {
 });
 
 preencher();
+$('valor').focus();
 
 // Cotação: sem cache do WebView; a data vem da própria API
 function buscaCotacao() {
     if (!navigator.onLine) return status(true);
-    fetch('https://economia.awesomeapi.com.br/last/GBP-BRL,COP-BRL', { cache: 'no-store' })
+    fetch('https://economia.awesomeapi.com.br/last/COP-BRL,PEN-BRL,GBP-BRL', { cache: 'no-store' })
         .then(function (r) { if (!r.ok) throw r; return r.json(); })
         .then(function (d) {
             offline = false;
-            cot = { GBP: +d.GBPBRL.ask, COP: +d.COPBRL.ask, em: Math.max(+d.GBPBRL.timestamp, +d.COPBRL.timestamp) * 1000 };
+            cot = { em: 0 };
+            Object.keys(MOEDAS).forEach(function (m) {
+                cot[m] = +d[m + 'BRL'].ask;
+                cot.em = Math.max(cot.em, +d[m + 'BRL'].timestamp * 1000);
+            });
             gravar('cotacoes', cot);
             preencher();
         })
