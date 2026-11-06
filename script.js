@@ -33,6 +33,8 @@ function preencher() {
     var cg = modo === 'cg';
     $('box-saque').hidden = !cg;
     $('box-cashback').hidden = cg;
+    $('box-final').hidden = cg;
+    $('rotulo').textContent = cg ? 'Na conta' : 'Na fatura';
     $('lbl-cashback').hidden = cg;
     $('lbl-taxa').hidden = !(cg && $('saque').checked);
     $('nota').textContent = cg
@@ -107,6 +109,19 @@ $('padrao').addEventListener('click', function () {
     gravar('taxas', taxas);
     manual = false; gravar('manual', false);
     preencher();
+});
+
+// Menu e janelas
+var $menu = $('menu'), $btnMenu = $('btn-menu');
+function menu(abrir) { $menu.hidden = !abrir; $btnMenu.setAttribute('aria-expanded', abrir); }
+$btnMenu.addEventListener('click', function (e) { e.stopPropagation(); menu($menu.hidden); });
+document.addEventListener('click', function () { menu(false); });
+document.querySelectorAll('[data-abre]').forEach(function (b) {
+    b.addEventListener('click', function () { menu(false); $(b.dataset.abre).showModal(); });
+});
+document.querySelectorAll('dialog').forEach(function (d) {
+    d.querySelector('.fechar').addEventListener('click', function () { d.close(); });
+    d.addEventListener('click', function (e) { if (e.target === d) d.close(); });
 });
 
 preencher();

@@ -14,13 +14,41 @@ body {
     font: 16px/1.4 system-ui, -apple-system, Roboto, sans-serif; -webkit-tap-highlight-color: transparent;
 }
 header {
-    padding: 28px 20px 64px; color: #fff; text-align: center;
+    position: relative; display: flex; justify-content: space-between; align-items: center;
+    padding: 18px 20px 62px; color: #fff;
     background: linear-gradient(135deg, #2b0a4a, var(--roxo-esc) 50%, #820ad1);
 }
-h1 { margin: 0; font-size: 24px; font-weight: 700; letter-spacing: -.3px; }
-header p { margin: 4px 0 0; opacity: .75; font-size: 14px; }
+.marca { display: flex; align-items: center; gap: 10px; margin: 0; font-size: 22px; font-weight: 300; letter-spacing: -.5px; }
+.marca b { font-weight: 800; }
+.logo { display: grid; place-items: center; width: 36px; height: 36px; border-radius: 11px; font-size: 20px; font-weight: 700; background: linear-gradient(135deg, #fff, #e3c8ff); color: var(--roxo-esc); box-shadow: 0 4px 14px rgba(0, 0, 0, .25); }
+.icone { display: grid; place-items: center; width: 40px; height: 40px; padding: 0; margin: 0; border: 0; border-radius: 50%; background: rgba(255, 255, 255, .14); color: #fff; fill: currentColor; cursor: pointer; }
+.menu-wrap { position: relative; }
+.menu { position: absolute; right: 0; top: 46px; z-index: 10; min-width: 160px; padding: 6px; border-radius: 14px; background: var(--card); border: 1px solid var(--borda); box-shadow: 0 10px 30px rgba(0, 0, 0, .2); display: flex; flex-direction: column; }
+.menu button { margin: 0; padding: 12px; text-align: left; border-radius: 10px; background: none; color: var(--texto); font-weight: 500; }
+.menu button:active { background: var(--tab); }
+
+dialog.folha { width: 100%; max-width: 520px; margin: auto auto 0; padding: 20px 20px 28px; border: 0; border-radius: 24px 24px 0 0; background: var(--card); color: var(--texto); }
+dialog.folha::backdrop { background: rgba(20, 8, 32, .55); backdrop-filter: blur(3px); }
+dialog[open].folha { animation: sobe .25s ease-out; }
+@keyframes sobe { from { transform: translateY(40px); opacity: 0; } }
+.folha-topo { display: flex; justify-content: space-between; align-items: center; margin-bottom: 16px; }
+.folha-topo h2 { margin: 0; font-size: 18px; text-transform: none; letter-spacing: 0; color: var(--texto); }
+.fechar { margin: 0; width: 34px; height: 34px; padding: 0; border-radius: 50%; }
+
+.perfil { display: flex; align-items: center; gap: 14px; }
+.perfil strong { display: block; font-size: 18px; }
+.perfil small { color: var(--suave); }
+.avatar { display: grid; place-items: center; width: 56px; height: 56px; border-radius: 18px; font-weight: 800; font-size: 20px; color: #fff; background: linear-gradient(135deg, var(--roxo-esc), var(--roxo)); }
+.descricao { margin: 16px 0; color: var(--suave); font-size: 14px; }
+.links { display: flex; flex-direction: column; gap: 8px; }
+.links a { display: flex; justify-content: space-between; align-items: center; padding: 14px 16px; border-radius: 14px; background: var(--tab); color: var(--texto); text-decoration: none; font-weight: 600; }
+.links a small { color: var(--roxo); font-weight: 500; }
+.links a::after { content: "↗"; margin-left: 8px; color: var(--roxo); }
+.links a small { margin-left: auto; }
+.rodape { margin: 18px 0 0; text-align: center; font-size: 12px; color: var(--suave); }
+
 h2 { margin: 0 0 12px; font-size: 13px; font-weight: 600; text-transform: uppercase; letter-spacing: .6px; color: var(--suave); }
-main { max-width: 520px; margin: -44px auto 0; padding: 0 16px 24px; display: flex; flex-direction: column; gap: 14px; }
+main { max-width: 520px; margin: -40px auto 0; padding: 0 16px 24px; display: flex; flex-direction: column; gap: 14px; }
 
 .card { background: var(--card); border-radius: 20px; padding: 18px; box-shadow: var(--sombra); border: 1px solid var(--borda); }
 
@@ -63,12 +91,6 @@ button { margin-top: 12px; padding: 10px 14px; border: 0; border-radius: 12px; b
 [hidden] { display: none !important; }
 .cashback { margin-top: 6px; color: rgba(255, 255, 255, .85) !important; }
 .cashback strong { color: #fff; }
-.taxas summary { display: flex; justify-content: space-between; align-items: center; cursor: pointer; list-style: none; font-size: 13px; font-weight: 600; text-transform: uppercase; letter-spacing: .6px; color: var(--suave); }
-.taxas summary::-webkit-details-marker { display: none; }
-.taxas summary::after { content: "›"; font-size: 22px; line-height: 1; transition: transform .2s; }
-.taxas[open] summary::after { transform: rotate(90deg); }
-.taxas[open] summary { margin-bottom: 14px; }
-.taxas summary:focus-visible { outline: 2px solid var(--roxo); outline-offset: 4px; border-radius: 4px; }
 #status { display: flex; flex-wrap: wrap; justify-content: center; gap: 8px; }
 .pilula { display: inline-flex; align-items: center; gap: 6px; padding: 6px 12px; border-radius: 999px; font-size: 12px; font-weight: 600; background: var(--card); border: 1px solid var(--borda); color: var(--suave); }
 .pilula::before { content: ""; width: 8px; height: 8px; border-radius: 50%; background: currentColor; }
@@ -79,8 +101,11 @@ button { margin-top: 12px; padding: 10px 14px; border: 0; border-radius: 12px; b
 .extras { display: grid; grid-template-columns: 1fr 1fr; gap: 10px; margin-top: 12px; }
 .extras > span { display: flex; flex-direction: column; gap: 2px; padding: 10px 12px; border-radius: 12px; background: rgba(255, 255, 255, .12); font-size: 12px; color: rgba(255, 255, 255, .8); }
 .extras strong { font-size: 17px; color: #fff; }
-.extras .final { grid-column: 1 / -1; padding: 10px 12px; border-radius: 12px; background: rgba(255, 255, 255, .2); color: rgba(255, 255, 255, .85); font-size: 13px; }
-.extras .final summary { display: flex; justify-content: space-between; align-items: center; list-style: none; cursor: pointer; }
-.extras .final summary::-webkit-details-marker { display: none; }
-.extras .final strong { font-size: 20px; color: #fff; }
-.extras .final p { margin: 6px 0 0; font-size: 12px; }
+.topo-resultado { display: flex; justify-content: space-between; align-items: flex-start; gap: 12px; }
+.topo-resultado > div { min-width: 0; flex: 1; display: flex; flex-direction: column; gap: 2px; }
+.final { flex-shrink: 0; max-width: 46%; padding: 10px 12px; border-radius: 14px; background: rgba(255, 255, 255, .18); color: rgba(255, 255, 255, .85); text-align: right; }
+.final summary { display: flex; flex-direction: column; gap: 2px; list-style: none; cursor: pointer; }
+.final summary::-webkit-details-marker { display: none; }
+.final summary small::after { content: " ⓘ"; }
+.final strong { font-size: 20px; color: #fff; white-space: nowrap; }
+.final p { margin: 6px 0 0; font-size: 11px; }
