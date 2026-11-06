@@ -64,7 +64,12 @@ function status(erro) {
 document.querySelectorAll('input[type=radio], #saque').forEach(function (el) {
     el.addEventListener('change', preencher);
 });
-$('valor').addEventListener('input', calcula);
+// Máscara de centavos: 1 → 0,01 → 0,10 → 1,00
+$('valor').addEventListener('input', function () {
+    var d = this.value.replace(/\D/g, '').replace(/^0+/, '');
+    this.value = d ? (d / 100).toLocaleString('pt-BR', { minimumFractionDigits: 2 }) : '';
+    calcula();
+});
 campos.forEach(function (id) {
     $(id).addEventListener('input', function () { salvarCampo(id); });
 });

@@ -13,8 +13,8 @@
 
 <main>
     <div class="tabs" role="radiogroup" aria-label="Moeda">
-        <label><input type="radio" name="moeda" value="GBP" checked> £ Libra</label>
-        <label><input type="radio" name="moeda" value="COP"> $ Peso colombiano</label>
+        <label><input type="radio" name="moeda" value="COP" checked> $ Peso colombiano</label>
+        <label><input type="radio" name="moeda" value="GBP"> £ Libra</label>
     </div>
 
     <div class="tabs" role="radiogroup" aria-label="Modalidade">
@@ -23,7 +23,7 @@
     </div>
 
     <div class="valores">
-        <label class="moeda"><span id="simbolo">£</span><input type="text" inputmode="decimal" id="valor" autocomplete="off"></label>
+        <label class="moeda"><span id="simbolo">$</span><input type="text" inputmode="numeric" id="valor" autocomplete="off" placeholder="0,00"></label>
         <label class="moeda"><span>R$</span><input type="text" id="brl" readonly></label>
     </div>
 
