@@ -1,11 +1,11 @@
-# Cambix (CambioCartao)
+# NuRate
 
 Calcula quanto uma compra em **peso colombiano (COP)**, **sol peruano (PEN)** ou **libra (GBP)** custa em reais no Nubank:
 
 - **Ultravioleta (crédito):** cashback 1,25% sobre o total em reais. Cotação × (1 + spread 3,5%) × (1 + IOF). IOF 3,5% vem na fatura e é reembolsado; o app mostra IOF reembolsado, cashback e o custo final.
 - **Conta Global:** cotação × (1 + spread 0%) × (1 + IOF 3,5%). Opção de incluir a tarifa de saque (2 saques grátis por mês; depois R$ 6,50, a confirmar no app).
 
-Web: https://raphaelfuchter.github.io/CambioCartao/ · Android: `app.apk` (funciona offline).
+Web: https://raphaelfuchter.github.io/NuRate/ · Android: `app.apk` (funciona offline).
 
 ## Dados
 - Cotação comercial (venda): [AwesomeAPI](https://economia.awesomeapi.com.br/last/COP-BRL,PEN-BRL,GBP-BRL).

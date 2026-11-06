@@ -220,7 +220,7 @@ window.addEventListener('offline', function () { status(true); });
 window.addEventListener('online', buscaCotacao);
 
 // Taxas publicadas no repo; no APK aponta para o GitHub Pages
-fetch('https://raphaelfuchter.github.io/CambioCartao/taxas.json?' + Date.now())
+fetch('https://raphaelfuchter.github.io/NuRate/taxas.json?' + Date.now())
     .then(function (r) { return r.json(); })
     .then(function (d) {
         padrao = d; gravar('padrao', d);
