@@ -1,15 +1,41 @@
+// Armazenamento: o WebView do APK não tem localStorage, então usa IndexedDB.
+// Tudo é carregado para memória antes de iniciar; gravações vão para o banco em segundo plano.
 (function () {
+'use strict';
+var db = null, mem = {};
+function abrir(pronto) {
+    try {
+        var req = indexedDB.open('cambio', 1);
+        req.onupgradeneeded = function () { req.result.createObjectStore('kv'); };
+        req.onerror = function () { pronto(); };
+        req.onsuccess = function () {
+            db = req.result;
+            var cur = db.transaction('kv').objectStore('kv').openCursor();
+            cur.onsuccess = function () {
+                var c = cur.result;
+                if (c) { mem[c.key] = c.value; c.continue(); } else pronto();
+            };
+            cur.onerror = function () { pronto(); };
+        };
+    } catch (e) { pronto(); }
+}
+var iniciado = false;
+function iniciar() { if (iniciado) return; iniciado = true; app(mem, function (k, v) {
+    mem[k] = v;
+    try { db && db.transaction('kv', 'readwrite').objectStore('kv').put(v, k); } catch (e) {}
+}); }
+abrir(iniciar);
+setTimeout(iniciar, 1500); // banco travado: inicia sem dados salvos
+})();
+
+function app(mem, salvar) {
 'use strict';
 
 var $ = function (id) { return document.getElementById(id); };
 var campos = ['cotacao', 'spread', 'iof', 'taxa', 'cashback'];
 
-function ler(k, def) {
-    try { return JSON.parse(localStorage.getItem(k)) || def; } catch (e) { return def; }
-}
-function gravar(k, v) {
-    try { localStorage.setItem(k, JSON.stringify(v)); } catch (e) {}
-}
+function ler(k, def) { return mem[k] != null ? JSON.parse(mem[k]) : def; }
+function gravar(k, v) { salvar(k, JSON.stringify(v)); }
 
 function num(s) { s = String(s); if (s.indexOf(',') >= 0) s = s.replace(/\./g, '').replace(',', '.'); return +s || 0; }
 function txt(n) { return String(n).replace('.', ','); }
@@ -137,14 +163,22 @@ document.querySelectorAll('dialog').forEach(function (d) {
 
 preencher();
 
-fetch('https://economia.awesomeapi.com.br/last/GBP-BRL,COP-BRL')
-    .then(function (r) { return r.json(); })
-    .then(function (d) {
-        cot = { GBP: +d.GBPBRL.ask, COP: +d.COPBRL.ask, em: Date.now() };
-        gravar('cotacoes', cot);
-        preencher();
-    })
-    .catch(function () { status(true); });
+// Cotação: sem cache do WebView; a data vem da própria API
+function buscaCotacao() {
+    if (!navigator.onLine) return status(true);
+    fetch('https://economia.awesomeapi.com.br/last/GBP-BRL,COP-BRL', { cache: 'no-store' })
+        .then(function (r) { if (!r.ok) throw r; return r.json(); })
+        .then(function (d) {
+            offline = false;
+            cot = { GBP: +d.GBPBRL.ask, COP: +d.COPBRL.ask, em: Math.max(+d.GBPBRL.timestamp, +d.COPBRL.timestamp) * 1000 };
+            gravar('cotacoes', cot);
+            preencher();
+        })
+        .catch(function () { status(true); });
+}
+buscaCotacao();
+window.addEventListener('offline', function () { status(true); });
+window.addEventListener('online', buscaCotacao);
 
 // Taxas publicadas no repo; no APK aponta para o GitHub Pages
 fetch('https://raphaelfuchter.github.io/CambioCartao/taxas.json?' + Date.now())
@@ -155,4 +189,4 @@ fetch('https://raphaelfuchter.github.io/CambioCartao/taxas.json?' + Date.now())
         preencher();
     })
     .catch(function () {});
-})();
+}
