@@ -2,7 +2,7 @@
 
 Calcula quanto uma compra em **libra (GBP)** ou **peso colombiano (COP)** custa em reais no Nubank:
 
-- **Ultravioleta (crédito):** cotação × (1 + spread 3,5%) × (1 + IOF). O IOF é devolvido na fatura, então o padrão é 0%.
+- **Ultravioleta (crédito):** cashback 1,25% sobre o total em reais. Cotação × (1 + spread 3,5%) × (1 + IOF). O IOF é devolvido na fatura, então o padrão é 0%.
 - **Conta Global:** cotação × (1 + spread 0%) × (1 + IOF 3,5%). Opção de incluir a tarifa de saque (2 saques grátis por mês; depois R$ 6,50, a confirmar no app).
 
 Web: https://raphaelfuchter.github.io/CambioCartao/ · Android: `app.apk` (funciona offline).

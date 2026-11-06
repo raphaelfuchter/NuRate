@@ -2,7 +2,7 @@
 'use strict';
 
 var $ = function (id) { return document.getElementById(id); };
-var campos = ['cotacao', 'spread', 'iof', 'taxa'];
+var campos = ['cotacao', 'spread', 'iof', 'taxa', 'cashback'];
 
 function ler(k, def) {
     try { return JSON.parse(localStorage.getItem(k)) || def; } catch (e) { return def; }
@@ -29,8 +29,11 @@ function preencher() {
     $('spread').value = txt(t.spread);
     $('iof').value = txt(t.iof);
     $('taxa').value = txt(t.taxa || 0);
+    $('cashback').value = txt(t.cashback != null ? t.cashback : (padrao.uv.cashback || PADRAO.uv.cashback));
     var cg = modo === 'cg';
     $('box-saque').hidden = !cg;
+    $('box-cashback').hidden = cg;
+    $('lbl-cashback').hidden = cg;
     $('lbl-taxa').hidden = !(cg && $('saque').checked);
     $('nota').textContent = cg
         ? 'Conta Global: spread zero, IOF 3,5% na conversão. 2 saques grátis por mês; depois, tarifa por saque.'
@@ -42,9 +45,10 @@ function preencher() {
 function calcula() {
     var modo = marcado('modo');
     var saque = modo === 'cg' && $('saque').checked;
-    $('brl').value = calcular(num($('valor').value), num($('cotacao').value),
-        num($('spread').value), num($('iof').value), saque ? num($('taxa').value) : 0)
-        .toFixed(2).replace('.', ',');
+    var brl = calcular(num($('valor').value), num($('cotacao').value),
+        num($('spread').value), num($('iof').value), saque ? num($('taxa').value) : 0);
+    $('brl').value = brl.toFixed(2).replace('.', ',');
+    $('cashback-valor').textContent = cashback(brl, num($('cashback').value)).toFixed(2).replace('.', ',');
 }
 
 function salvarCampo(id) {

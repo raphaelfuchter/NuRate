@@ -5,40 +5,57 @@
     <title>Câmbio Cartão</title>
     <meta name="description" content="Quanto sua compra em libra ou peso colombiano custa em reais no Nubank Ultravioleta ou na Conta Global">
     <meta name="viewport" content="width=device-width, initial-scale=1">
-    <meta name="theme-color" content="#008c93">
+    <meta name="theme-color" content="#4a1a7a">
     <link rel="stylesheet" href="style.css">
 </head>
 <body>
-<header><h1>Câmbio ➤ Real</h1></header>
+<header>
+    <h1>Câmbio Cartão</h1>
+    <p>Quanto sua compra vai custar em reais</p>
+</header>
 
 <main>
     <div class="tabs" role="radiogroup" aria-label="Moeda">
-        <label><input type="radio" name="moeda" value="COP" checked> $ Peso colombiano</label>
-        <label><input type="radio" name="moeda" value="GBP"> £ Libra</label>
+        <label><input type="radio" name="moeda" value="COP" checked><span>🇨🇴 Peso colombiano</span></label>
+        <label><input type="radio" name="moeda" value="GBP"><span>🇬🇧 Libra</span></label>
     </div>
+
+    <section class="card conversor">
+        <label class="campo-valor">
+            <small>Valor da compra</small>
+            <span class="linha"><span id="simbolo">$</span><input type="text" inputmode="numeric" id="valor" autocomplete="off" placeholder="0,00"></span>
+        </label>
+        <div class="resultado">
+            <small>Na fatura / conta</small>
+            <span class="linha"><span>R$</span><input type="text" id="brl" readonly tabindex="-1"></span>
+            <small id="box-cashback" class="cashback">Cashback de <strong>R$ <span id="cashback-valor">0,00</span></strong></small>
+        </div>
+    </section>
 
     <div class="tabs" role="radiogroup" aria-label="Modalidade">
-        <label><input type="radio" name="modo" value="uv" checked> Ultravioleta (crédito)</label>
-        <label><input type="radio" name="modo" value="cg"> Conta Global</label>
+        <label><input type="radio" name="modo" value="uv" checked><span>Cartão Ultravioleta</span></label>
+        <label><input type="radio" name="modo" value="cg"><span>Conta Global</span></label>
     </div>
 
-    <div class="valores">
-        <label class="moeda"><span id="simbolo">$</span><input type="text" inputmode="numeric" id="valor" autocomplete="off" placeholder="0,00"></label>
-        <label class="moeda"><span>R$</span><input type="text" id="brl" readonly></label>
-    </div>
+    <label class="check card" id="box-saque" hidden>
+        <span>Incluir taxa de saque</span>
+        <input type="checkbox" id="saque" role="switch">
+    </label>
 
-    <label class="check" id="box-saque" hidden><input type="checkbox" id="saque"> Incluir taxa de saque</label>
-
-    <div id="vars">
-        <label>Cotação (R$)<input type="text" inputmode="decimal" id="cotacao"></label>
-        <label>Spread (%)<input type="text" inputmode="decimal" id="spread"></label>
-        <label>IOF (%)<input type="text" inputmode="decimal" id="iof"></label>
-        <label id="lbl-taxa" hidden>Taxa saque (R$)<input type="text" inputmode="decimal" id="taxa"></label>
-    </div>
+    <section class="card">
+        <h2>Taxas</h2>
+        <div id="vars">
+            <label>Cotação (R$)<input type="text" inputmode="decimal" id="cotacao"></label>
+            <label>Spread (%)<input type="text" inputmode="decimal" id="spread"></label>
+            <label>IOF (%)<input type="text" inputmode="decimal" id="iof"></label>
+            <label id="lbl-cashback">Cashback (%)<input type="text" inputmode="decimal" id="cashback"></label>
+            <label id="lbl-taxa" hidden>Saque (R$)<input type="text" inputmode="decimal" id="taxa"></label>
+        </div>
+        <p id="nota"></p>
+        <button type="button" id="padrao" hidden>↺ Restaurar taxas padrão</button>
+    </section>
 
     <p id="status"></p>
-    <p id="nota"></p>
-    <button type="button" id="padrao" hidden>Restaurar taxas padrão</button>
 </main>
 
 <script src="calc.js"></script>
