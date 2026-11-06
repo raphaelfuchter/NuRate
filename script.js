@@ -50,11 +50,12 @@ function calcula() {
 function salvarCampo(id) {
     var modo = marcado('modo'), v = num($(id).value);
     if (id === 'cotacao') { cot[marcado('moeda')] = v; gravar('cotacoes', cot); }
-    else { taxas[modo][id] = v; gravar('taxas', taxas); manual = true; gravar('manual', true); }
+    else { taxas[modo][id] = v; gravar('taxas', taxas); manual = true; gravar('manual', true); status(); }
     calcula();
 }
 
 function status(erro) {
+    $('padrao').hidden = !manual;
     $('status').textContent = (erro ? 'Sem internet. ' : '') + (cot.em
         ? 'Cotação comercial (venda) de ' + new Date(cot.em).toLocaleString('pt-BR') + '.'
         : 'Cotação ainda não consultada; usando valor aproximado.')
