@@ -20,4 +20,4 @@ Web: https://raphaelfuchter.github.io/CambioCartao/ · Android: `app.apk` (funci
 CC BY 4.0.
 
 ## Ajuste calibrado (cartão)
-No cartão, o Nubank converte a moeda para dólar pela cotação da Mastercard e depois para real pela cotação dele do dia; nenhuma das duas é pública. Em Taxas, "Calibrar" compara o valor de uma compra real na fatura (sem IOF) com o estimado e guarda o ajuste (%) por moeda.
+No cartão, o Nubank converte a moeda para dólar pela cotação da Mastercard e depois para real pela cotação dele do dia; nenhuma das duas é pública. Em Taxas, "Calibrar" compara o total real na fatura (compra + IOF) com o "Na fatura" estimado e guarda o ajuste (%) por moeda.

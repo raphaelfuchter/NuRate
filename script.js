@@ -174,10 +174,10 @@ document.querySelectorAll('dialog').forEach(function (d) {
     d.addEventListener('click', function (e) { if (e.target === d) d.close(); });
 });
 
-// Calibração: ajuste = fatura real / valor estimado sem ajuste e sem IOF - 1
+// Calibração: ajuste = total real na fatura (compra + IOF) / estimado sem ajuste - 1
 $('calibrar').addEventListener('click', function () {
     var real = num($('fatura-real').value);
-    var estimado = calcular(num($('valor').value), num($('cotacao').value), num($('spread').value), 0);
+    var estimado = calcular(num($('valor').value), num($('cotacao').value), num($('spread').value), num($('iof').value));
     if (!real || !estimado) {
         $('calibra-msg').textContent = 'Preencha o valor da compra na tela e o valor da fatura.';
         return;
