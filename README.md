@@ -1,4 +1,4 @@
-# CambioCartao
+# Cambix (CambioCartao)
 
 Calcula quanto uma compra em **peso colombiano (COP)**, **sol peruano (PEN)** ou **libra (GBP)** custa em reais no Nubank:
 
