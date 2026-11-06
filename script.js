@@ -34,6 +34,7 @@ function preencher() {
     $('box-saque').hidden = !cg;
     $('box-cashback').hidden = cg;
     $('box-final').hidden = cg;
+    document.querySelector('.resultado').classList.toggle('cartao', !cg);
     $('rotulo').textContent = cg ? 'Na conta' : 'Na fatura';
     $('lbl-cashback').hidden = cg;
     $('lbl-taxa').hidden = !(cg && $('saque').checked);
