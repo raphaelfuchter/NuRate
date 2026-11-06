@@ -56,7 +56,7 @@ function salvarCampo(id) {
 
 function status(erro) {
     $('status').textContent = (erro ? 'Sem internet. ' : '') + (cot.em
-        ? 'Cotação comercial (venda) de ' + new Date(cot.em).toLocaleString('pt-BR')
+        ? 'Cotação comercial (venda) de ' + new Date(cot.em).toLocaleString('pt-BR') + '.'
         : 'Cotação ainda não consultada; usando valor aproximado.')
         + ' Taxas ' + (manual ? 'editadas manualmente.' : 'de ' + (padrao.atualizado || 'padrão') + '.');
 }
