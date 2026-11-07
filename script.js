@@ -38,6 +38,11 @@ function ler(k, def) { return mem[k] != null ? JSON.parse(mem[k]) : def; }
 function gravar(k, v) { salvar(k, JSON.stringify(v)); }
 
 function num(s) { s = String(s); if (s.indexOf(',') >= 0) s = s.replace(/\./g, '').replace(',', '.'); return +s || 0; }
+// Valor da compra: moedas de centavos pouco usados digitam só inteiros (20.000 em vez de 20.000,00)
+var SEM_CENTAVOS = ['COP'];
+function casas() { return SEM_CENTAVOS.indexOf(marcado('moeda')) >= 0 ? 0 : 2; }
+function fmtValor(n) { var c = casas(); return n.toLocaleString('pt-BR', { minimumFractionDigits: c, maximumFractionDigits: c }); }
+function valor() { return +$('valor').value.replace(/\./g, '').replace(',', '.') || 0; }
 function txt(n) { return String(n).replace('.', ','); }
 function marcado(nome) { return document.querySelector('input[name=' + nome + ']:checked').value; }
 
@@ -90,6 +95,7 @@ var manual = ler('manual', false);
 function preencher() {
     var modo = marcado('modo'), moeda = marcado('moeda'), t = taxas[modo];
     $('simbolo').textContent = simbolo(moeda);
+    $('valor').value = fmtValor(casas() ? valor() : Math.round(valor()));
     $('cotacao').value = txt(cot[moeda] || 0);
     $('spread').value = txt(t.spread);
     $('iof').value = txt(t.iof);
@@ -126,11 +132,11 @@ function calcula() {
     var modo = marcado('modo');
     var saque = modo === 'cg' && $('saque').checked;
     var cotacao = num($('cotacao').value) * (modo === 'uv' ? 1 + num($('ajuste').value) / 100 : 1);
-    var brl = calcular(num($('valor').value), cotacao,
+    var brl = calcular(valor(), cotacao,
         num($('spread').value), num($('iof').value), saque ? num($('taxa').value) : 0);
     $('brl').textContent = reais(brl);
     // Ultravioleta: IOF entra na fatura e volta depois; cashback sobre a compra sem IOF
-    var semIof = calcular(num($('valor').value), cotacao, num($('spread').value), 0);
+    var semIof = calcular(valor(), cotacao, num($('spread').value), 0);
     $('iof-valor').textContent = reais(brl - semIof);
     var cb = cashback(semIof, num($('cashback').value));
     $('cashback-valor').textContent = reais(cb);
@@ -169,10 +175,10 @@ function status(erro) {
 document.querySelectorAll('input[name=modo], #saque').forEach(function (el) {
     el.addEventListener('change', preencher);
 });
-// Máscara de centavos: 1 → 0,01 → 0,10 → 1,00
+// Máscara de centavos: 1 → 0,01 → 0,10 → 1,00 (sem centavos: 1 → 10 → 100)
 $('valor').addEventListener('input', function () {
     var d = this.value.replace(/\D/g, '').replace(/^0+/, '');
-    this.value = ((d || 0) / 100).toLocaleString('pt-BR', { minimumFractionDigits: 2 });
+    this.value = fmtValor((d || 0) / Math.pow(10, casas()));
     fimCursor(this);
     ajustaFonte(this);
     calcula();
@@ -212,7 +218,7 @@ document.querySelectorAll('dialog').forEach(function (d) {
 // Calibração: ajuste = total real na fatura (compra + IOF) / estimado sem ajuste - 1
 $('calibrar').addEventListener('click', function () {
     var real = num($('fatura-real').value);
-    var estimado = calcular(num($('valor').value), num($('cotacao').value), num($('spread').value), num($('iof').value));
+    var estimado = calcular(valor(), num($('cotacao').value), num($('spread').value), num($('iof').value));
     if (!real || !estimado) {
         $('calibra-msg').textContent = 'Preencha o valor da compra na tela e o valor da fatura.';
         return;
