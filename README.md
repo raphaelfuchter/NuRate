@@ -5,7 +5,7 @@
 **Quanto sua compra no exterior custa em reais no Nubank, com spread, IOF, cashback e saque já incluídos.**
 
 [![Web](https://img.shields.io/badge/abrir-web-8a05be?style=for-the-badge&logo=googlechrome&logoColor=white)](https://raphaelfuchter.github.io/NuRate/)
-[![Android](https://img.shields.io/badge/baixar-APK-3ddc84?style=for-the-badge&logo=android&logoColor=white)](https://github.com/raphaelfuchter/NuRate/raw/main/app.apk)
+[![Android](https://img.shields.io/badge/baixar-APK-3ddc84?style=for-the-badge&logo=android&logoColor=white)](https://github.com/raphaelfuchter/NuRate/releases/latest/download/NuRate.apk)
 [![Moedas](https://img.shields.io/badge/moedas-41-4a1a7a?style=for-the-badge)](#-moedas)
 [![Licença](https://img.shields.io/badge/licen%C3%A7a-CC%20BY%204.0-lightgrey?style=for-the-badge)](https://creativecommons.org/licenses/by/4.0/)
 
