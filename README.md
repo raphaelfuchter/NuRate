@@ -18,10 +18,11 @@
 ## ✨ Recursos
 
 - 🌎 **41 moedas com cotação ao vivo** (AwesomeAPI), com bandeira, símbolo e nome em português.
-- ⭐ **2 moedas favoritas** na tela (padrão: 🇨🇴 COP e 🇵🇪 PEN). Troque pelo botão ⇄ e inverta a ordem com ⇅.
+- ⭐ **2 moedas favoritas** na tela, escolhidas por você. Troque pelo botão ⇄ e inverta a ordem com ⇅.
 - 💳 **Duas modalidades:** Cartão Ultravioleta e Conta Global.
 - 🧾 **Custo real:** valor na fatura, IOF reembolsado, cashback e custo final.
 - 🎯 **Calibração por moeda** com o valor real de uma fatura.
+- 🌙 **Modo escuro** automático, segue o tema do sistema.
 - 📴 **Funciona offline** com a última cotação e as últimas taxas salvas.
 - ✏️ **Tudo editável:** cotação, spread, IOF, cashback e tarifa de saque.
 - 🔢 **Digitação estilo caixa:** `1 → 0,01 → 0,10 → 1,00`. COP digita só inteiros.
